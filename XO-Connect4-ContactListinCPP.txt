@@ -1,0 +1,515 @@
+#include <iostream>
+#include <string>
+#include <Windows.h>
+using namespace std;
+int xo[10][10]{{ 5, 0 }};
+char c4[10][10];
+int m, p1, p2, turn = 1;
+string p11 = "Player 1", p22 = "Player 2";
+void xob(){
+	for (int s = 0; s < m; s++){
+		cout << "____";
+	}
+	cout << endl;
+	for (int n = 0; n < m; n++){
+		cout << "|";
+		for (int s = 0; s < m; s++){
+			cout << "   |";
+
+		}
+		cout << endl;
+		cout << "|";
+		for (int i = 0; i < m; i++){
+			if (xo[n][i] == 100){ cout << " " << 'X' << " |"; }
+			else if (xo[n][i] == 200){ cout << " " << 'O' << " |"; }
+			else if (xo[n][i] > 9){ cout << " " << xo[n][i] << "|"; }
+			else {
+				cout << " " << xo[n][i] << " |";
+			}
+		}
+		cout << endl;
+		cout << "|";
+		for (int s = 0; s < m; s++){
+			cout << "___|";
+		}cout << endl;
+	}
+
+
+}
+int out(int x){
+	int count = 0;
+	for (int i = 1; i <= (m*m); i++){
+		if (x == i){ count++; }
+	}
+	if (count == 0){
+		xob();
+		cout << "\nPlz Enter in Exist Slot\n";
+		cin >> x;
+		out(x);
+	}
+	return x;
+}
+bool win(){
+	int x;
+	for (int n = 0; n < m; n++){
+		for (int i = 0; i < m; i++){
+			x = xo[n][i];
+			int count = 0;
+			for (int s = 0; s < m; s++){
+				if (xo[n][s] == x){ count++; }
+			}
+			if (count == m&&x == 100){
+				cout << "\n\t" << p11 << " Win\n";
+				return true;
+			}
+			else if (count == m&&x == 200){
+				cout << "\n\t" << p22 << " Win\n";
+				return true;
+			}
+		}
+	}
+	for (int n = 0; n < m; n++){
+		for (int i = 0; i < m; i++){
+			x = xo[n][i];
+			int count = 0;
+			for (int s = 0; s < m; s++){
+				if (xo[s][i] == x){ count++; }
+			}
+			if (count == m&&x == 100){
+				cout << "\n\t" << p11 << " Win\n";
+				return true;
+			}
+			else if (count == m&&x == 200){
+				cout << "\n\t" << p22 << " Win\n";
+				return true;
+			}
+		}
+	}
+
+	x = xo[0][0];
+	int count = 0;
+	for (int l = 0, r = 0; l < m; l++, r++){
+		if (xo[l][r] == x){ count++; }
+	}
+	if (count == m&&x == 100){
+		cout << "\n\t" << p11 << " Win\n";
+		return true;
+	}
+	else if (count == m&&x == 200){
+		cout << "\n\t" << p22 << " Win\n";
+		return true;
+	}
+	x = xo[0][m - 1];
+	count = 0;
+	for (int l = 0, r = m - 1; l < m; l++, r--){
+		if (xo[l][r] == x){ count++; }
+	}
+	if (count == m&&x == 100){
+		cout << "\n\t" << p11 << " Win\n";
+		return true;
+	}
+	else if (count == m&&x == 200){
+		cout << "\n\t" << p22 << " Win\n";
+		return true;
+	}
+	count = 0;
+	for (int n = 0; n < m; n++){
+		for (int i = 0; i < m; i++){
+			if (xo[n][i] == 100 || xo[n][i] == 200){
+				count++;
+			}
+		}
+	}
+	if (count == (m*m)){
+		cout << "\n\n\tGAME OVER\n";
+		return true;
+	}
+	return false;
+
+}
+void pl(){
+	for (int n = 0; n < m; n++){
+		for (int i = 0; i < m; i++){
+			if (p1 == xo[n][i] && xo[n][i] != 100 && xo[n][i] != 200){
+				xo[n][i] = 100;
+				c4[n][i] = p1;
+				p1 = 80;
+				break;
+			}
+			if (p2 == xo[n][i] && xo[n][i] != 100 && xo[n][i] != 200){
+				xo[n][i] = 200;
+				c4[n][i] = p2;
+				p2 = 90;
+				break;
+			}
+			if (p1 == c4[n][i] && (xo[n][i] == 100 || xo[n][i] == 200)){
+				xob();
+				cout << "\n" << p11 << " Plz Choose an Empty Place\n";
+				cin >> p1;
+				p1 = out(p1);
+				pl();
+			}
+			if (p2 == c4[n][i] && (xo[n][i] == 100 || xo[n][i] == 200)){
+				xob();
+				cout << "\n" << p22 << " Plz Choose an Empty Place\n";
+				cin >> p2;
+				p2 = out(p2);
+				pl();
+			}
+		}
+	}
+}
+void compE(){
+
+	for (int n = 0; n < m; n++){
+		for (int i = 0; i < m; i++){
+			if (xo[n][i] != 100 && xo[n][i] != 200){
+				xo[n][i] = 200;
+				c4[n][i] = turn;
+				n = 11;
+				break;
+			}
+		}
+	}
+
+}
+void compM(){
+	int counter = 0;
+	for (int n = 0; n < m; n++){
+		for (int i = 0; i < m; i++){
+			if (xo[n][i] == xo[n][i + 1] && i != m - 1){
+				if (xo[n][i + 2] != 100 && xo[n][i + 2] != 200){
+					c4[n][i + 2] = xo[n][i + 2];
+					xo[n][i + 2] = 200;
+					if (i != m - 2){
+						counter++;
+					}
+					n = 11;
+					break;
+				}
+			}
+			else if (xo[n][i] == xo[n + 1][i] && n != m - 1){
+				if (xo[n + 2][i] != 100 && xo[n + 2][i] != 200){
+					c4[n + 2][i] = xo[n + 2][i];
+					xo[n + 2][i] = 200;
+					if (n != m - 2){
+						counter++;
+					}
+					n = 11;
+					break;
+				}
+			}
+			else if (xo[n][i] == xo[n + 1][i + 1] && i != m - 1 && n != m - 1){
+				if (xo[n + 2][i + 2] != 100 && xo[n + 2][i + 2] != 200){
+					c4[n + 2][i + 2] = xo[n + 2][i + 2];
+					xo[n + 2][i + 2] = 200;
+					if (n != m - 2 && i != m - 2){
+						counter++;
+					}
+					n = 11;
+					break;
+				}
+			}
+			else if (xo[n][i] == xo[n + 1][i - 1] && i != 0 && n != m - 1){
+				if (xo[n + 2][i - 2] != 100 && xo[n + 2][i - 2] != 200){
+					c4[n + 2][i - 2] = xo[n + 2][i - 2];
+					xo[n + 2][i - 2] = 200;
+					if (i != 1 && n != m - 2){
+						counter++;
+					}
+					n = 11;
+					break;
+				}
+			}
+
+		}
+	}
+	if (counter == 0){
+		for (int n = 0; n < m; n++){
+			for (int i = 0; i < m; i++){
+				if (xo[n][i] != 100 && xo[n][i] != 200){
+					c4[n][i] = xo[n][i];
+					xo[n][i] = 200;
+					counter++;
+					n = 11;
+					break;
+				}
+			}
+		}
+	}
+}
+void compH(){
+	int counter = 0;
+	for (int n = 0; n < m; n++){
+		for (int i = 0; i < m; i++){
+			if (xo[n][i] == xo[n][i + 1] && i != m - 1){
+				if (xo[n][i + 2] != 100 && xo[n][i + 2] != 200){
+					c4[n][i + 2] = xo[n][i + 2];
+					xo[n][i + 2] = 200;
+					if (i != m - 2){
+						counter++;
+					}
+					n = 11;
+					break;
+				}
+			}
+			else if (xo[n][i] == xo[n - 1][i - 1] && n != 0 && i != 0){
+				if (xo[n - 2][i - 2] != 100 && xo[n - 2][i - 2] != 200){
+					c4[n - 2][i - 2] = xo[n - 2][i - 2];
+					xo[n - 2][i - 2] = 200;
+					if (i != 1 && n != 1){
+						counter++;
+					}
+					n = 11;
+					break;
+				}
+			}
+			else if (xo[n][i] == xo[n - 1][i + 1] && n != 0 && i != 0){
+				if (xo[n - 2][i + 2] != 100 && xo[n - 2][i + 2] != 200){
+					c4[n - 2][i + 2] = xo[n - 2][i + 2];
+					xo[n - 2][i + 2] = 200;
+					if (i != m - 2 && n != 1){
+						counter++;
+					}
+					n = 11;
+					break;
+				}
+			}
+			else if (xo[n][i] == xo[n][i - 1] && i != 0){
+				if (xo[n][i - 2] != 100 && xo[n][i - 2] != 200){
+					if (i != 1){
+						c4[n][i - 2] = xo[n][i - 2];
+						xo[n][i - 2] = 200;
+						counter++;
+					}
+					n = 11;
+					break;
+				}
+			}
+			else if (xo[n][i] == xo[n - 1][i] && n != 0){
+				if (xo[n - 2][i] != 100 && xo[n - 2][i] != 200){
+					if (n != 1){
+						c4[n - 2][i] = xo[n - 2][i];
+						xo[n - 2][i] = 200;
+						counter++;
+					}
+					n = 11;
+					break;
+				}
+			}
+			else if (xo[n][i] == xo[n + 1][i] && n != m - 1){
+				if (xo[n + 2][i] != 100 && xo[n + 2][i] != 200){
+					c4[n + 2][i] = xo[n + 2][i];
+					xo[n + 2][i] = 200;
+					if (n != m - 2){
+						counter++;
+					}
+					n = 11;
+					break;
+				}
+			}
+			else if (xo[n][i] == xo[n + 1][i + 1] && i != m - 1 && n != m - 1){
+				if (xo[n + 2][i + 2] != 100 && xo[n + 2][i + 2] != 200){
+					c4[n + 2][i + 2] = xo[n + 2][i + 2];
+					xo[n + 2][i + 2] = 200;
+					if (n != m - 2 && i != m - 2){
+						counter++;
+					}
+					n = 11;
+					break;
+				}
+			}
+			else if (xo[n][i] == xo[n + 1][i - 1] && i != 0 && n != m - 1){
+				if (xo[n + 2][i - 2] != 100 && xo[n + 2][i - 2] != 200){
+					c4[n + 2][i - 2] = xo[n + 2][i - 2];
+					xo[n + 2][i - 2] = 200;
+					if (i != 1 && n != m - 2){
+						counter++;
+					}
+					n = 11;
+					break;
+				}
+			}
+			else if (xo[n][i] == xo[n + 2][i + 2] && i != m - 2 && n != m - 2){
+				if (xo[n + 1][i + 1] != 100 && xo[n + 1][i + 1] != 200){
+					c4[n + 1][i + 1] = xo[n + 1][i + 1];
+					xo[n + 1][i + 1] = 200;
+					if (i != m - 2 && n != m - 2){
+						counter++;
+					}
+					n = 11;
+					break;
+				}
+			}
+			else if (xo[n][i] == xo[n + 2][i] && n != m - 2){
+				if (xo[n + 1][i] != 100 && xo[n + 1][i] != 200){
+					c4[n + 1][i] = xo[n + 1][i];
+					xo[n + 1][i] = 200;
+					if (n != m - 2){
+						counter++;
+					}
+					n = 11;
+					break;
+				}
+			}
+			else if (xo[n][i] == xo[n][i + 2] && i != m - 1){
+				if (xo[n][i + 1] != 100 && xo[n][i + 1] != 200){
+					c4[n][i + 1] = xo[n][i + 1];
+					xo[n][i + 1] = 200;
+					if (i != m - 1){
+						counter++;
+					}
+					n = 11;
+					break;
+				}
+			}
+		}
+	}
+	if (counter == 0){
+		for (int n = 0; n < m; n++){
+			for (int i = 0; i < m; i++){
+				if (xo[n][i] != 100 && xo[n][i] != 200){
+					c4[n][i] = xo[n][i];
+					xo[n][i] = 200;
+					counter++;
+					n = 11;
+					break;
+				}
+			}
+		}
+	}
+}
+void xog(){
+	int vs; char y;
+	cout << "\t Welcome to (XO)\n\n";
+	cout << "For 1 VS 1 clice \t\t\t 1\nFor play against computer clice \t 2\n";
+	cin >> vs;
+	if (vs == 1){
+		cout << "\nPlayers Names is Player 1 & Player 2 To change press Y Or press Anykey to continue \n";
+		cin >> y;
+		if (y == 'y' || y == 'Y'){
+			cout << "Player One Plz Enter your Name\n";
+			cin >> p11;
+			cout << "Player Two Plz Enter your Name\n";
+			cin >> p22;
+		}
+	tany:
+		cout << "Plz Enter The size of The game board From (3-10)" << endl;
+
+		cin >> m;
+		if (m<3 || m>10){
+			goto tany;
+		}
+		int c = 1;
+		for (int n = 0; n < m; n++){
+			for (int i = 0; i < m; i++){
+				xo[n][i] = c;
+				c++;
+			}
+		}
+		cout << "\t" << p11 << " uses (X) and " << p22 << " Uses (O)\n\n";
+		bool f = win();
+		while (f == false){
+			xob();
+			cout << "\n" << p11 << " your turn\n";
+			cin >> p1;
+			p1 = out(p1);
+			pl();
+			xob();
+			f = win();
+			if (f != false){ break; }
+
+			cout << endl;
+			cout << "\n" << p22 << " your turn\n";
+			cin >> p2;
+			p2 = out(p2);
+			pl();
+			xob();
+			f = win();
+		}
+	}
+	if (vs == 2){
+		p22 = "Computer";
+		int lvl;
+		cout << "\nTo change ur name press Y or press Anykey continue As Player 1\n";
+		cin >> y;
+		if (y == 'y' || y == 'Y'){
+			cin >> p11;
+		}
+		cout << "Plz Enter the game lvl\nEasy\t1\nMedium\t2\nHard\t3\n\n";
+		cin >> lvl;
+		cout << "Plz Enter The size of The game board From (3-10)" << endl;
+		cin >> m;
+		int c = 1;
+		for (int n = 0; n < m; n++){
+			for (int i = 0; i < m; i++){
+				xo[n][i] = c;
+				c++;
+			}
+		}
+		cout << "\t" << p11 << " uses (X) and " << p22 << " Uses (O)\n\n";
+		bool f = win();
+		while (f == false){
+			xob();
+			cout << "\n" << p11 << " your turn\n";
+			cin >> p1;
+			turn++;
+			p1 = out(p1);
+			pl();
+			f = win();
+			if (f != false){
+				xob();
+				break;
+			}
+			cout << endl;
+			if (lvl == 1){
+				compE();
+				turn++;
+				f = win();
+			}
+			else if (lvl == 2){
+				compM();
+				turn++;
+				f = win();
+				if (f == true)
+				{
+					xob();
+					break;
+				}
+			}
+			else if (lvl == 3){
+				compH();
+				turn++;
+				f = win();
+				if (f == true)
+				{
+					xob();
+					break;
+				}
+			}
+		}
+	}
+
+}
+void main(){
+
+	for (int n = 0; n < m; n++){
+		for (int i = 0; i < m; i++){
+			c4[n][i] = ' ';
+		}
+	}
+	int game;  string s;
+	/*s = "\n\tWelcome to EL.LORD.MOHAMED Games\n\n";
+	for (int i = 0; i < s.length(); i++){ cout<<s.at(i); Sleep(150); }
+	s= "For XO Enter\t\t 1\nFor Connect 4 Enter\t 2 \nTo Quit Enter\t\t 3\n";
+	for (int i = 0; i < s.length(); i++){ cout << s.at(i); Sleep(150); }*/
+	cin >> game;
+	if (game == 1){
+		xog();
+		}
+	
+	
+	system("pause");
+
+}
+
